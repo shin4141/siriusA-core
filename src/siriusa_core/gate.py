@@ -1,17 +1,20 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Literal, Optional
 
 Severity = Literal["PASS", "DELAY", "BLOCK"]
 
+
 @dataclass
 class Artifact:
     decision_id: str
     severity: Severity
-    until: Optional[str]          # ISO8601
+    until: Optional[str]  # ISO8601
     evidence: List[str]
     explain: str
+
 
 def run_gate(req: Dict[str, Any]) -> Artifact:
     decision_id = str(req.get("decision_id", "unknown"))
@@ -47,6 +50,7 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
         evidence=["rule:default => PASS"],
         explain="PASS under minimal demo rules.",
     )
+
 
 def artifact_to_dict(a: Artifact) -> Dict[str, Any]:
     return asdict(a)
