@@ -15,16 +15,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run PASS/DELAY demos
+      - name: Run PASS/DELAY/BLOCK demos
         run: |
           python cli.py examples/decision_request_pass.json
           python cli.py examples/decision_request_delay.json
+          python cli.py examples/decision_request_block.json
 
       - name: Save artifacts
         run: |
           mkdir -p artifacts
           python cli.py examples/decision_request_pass.json  > artifacts/ci_artifact_pass.json
           python cli.py examples/decision_request_delay.json > artifacts/ci_artifact_delay.json
+          python cli.py examples/decision_request_block.json > artifacts/ci_artifact_block.json
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
