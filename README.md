@@ -5,3 +5,4 @@ Deterministic pre-execution safety gate (PASS/DELAY/BLOCK) + artifact schema. Si
 ```bash
 python cli.py examples/decision_request.json
 ```
+Expected output: JSON artifact with severity PASS/DELAY/BLOCK.
