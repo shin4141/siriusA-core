@@ -1,0 +1,11 @@
+cat > examples/decision_request_pass.json <<'JSON'
+{
+  "version": "v0",
+  "decision_id": "demo-000",
+  "title": "Reversible or non-urgent action (demo)",
+  "irreversible": false,
+  "stake": "low",
+  "deadline_hours": 168,
+  "notes": "This should PASS under minimal demo rules."
+}
+JSON
