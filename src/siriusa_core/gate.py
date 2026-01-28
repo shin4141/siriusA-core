@@ -1,3 +1,4 @@
+cat > src/siriusa_core/gate.py <<'PY'
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
@@ -51,5 +52,8 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
         explain="PASS under minimal demo rules.",
     )
 
+
 def artifact_to_dict(a: Artifact) -> Dict[str, Any]:
     return asdict(a)
+PY
+
