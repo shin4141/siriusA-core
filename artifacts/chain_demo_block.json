@@ -1,0 +1,28 @@
+{
+  "chain_id": "pre-001__demo-003",
+  "severity": "BLOCK",
+  "until": null,
+  "pre": {
+    "decision_id": "pre-001",
+    "severity": "BLOCK",
+    "until": null,
+    "evidence": [
+      "rule:dm+airdrop_link => BLOCK"
+    ],
+    "explain": "BLOCK: common phishing pattern detected (DM + airdrop link)."
+  },
+  "tx": {
+    "decision_id": "demo-003",
+    "severity": "BLOCK",
+    "until": null,
+    "evidence": [
+      "rule:irreversible+stake=high+deadline<=6 => BLOCK"
+    ],
+    "explain": "BLOCK: high-stake irreversible action under short deadline."
+  },
+  "evidence": [
+    "pre:rule:dm+airdrop_link => BLOCK",
+    "tx:rule:irreversible+stake=high+deadline<=6 => BLOCK"
+  ],
+  "explain": "Chain artifact: Pre-Guard + Tx-Guard canonicalized (severity=max, evidence=union)."
+}
