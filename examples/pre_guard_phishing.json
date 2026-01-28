@@ -1,0 +1,8 @@
+{
+  "version": "v0",
+  "decision_id": "pre-001",
+  "source": "dm",
+  "link": "https://example.com/airdrop",
+  "urgency": "now",
+  "notes": "Typical phishing-style DM."
+}
