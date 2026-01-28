@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "decision_id": "demo-001",
+  "title": "Crypto transfer (demo)",
+  "irreversible": true,
+  "stake": "medium",
+  "deadline_hours": 48,
+  "notes": "Example request for SiriusA gate."
+}
