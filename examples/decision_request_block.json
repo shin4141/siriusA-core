@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "decision_id": "demo-003",
+  "title": "High-stake irreversible action (demo)",
+  "irreversible": true,
+  "stake": "high",
+  "deadline_hours": 2,
+  "notes": "This should trigger BLOCK."
+}
