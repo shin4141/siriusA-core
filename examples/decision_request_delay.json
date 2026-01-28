@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "decision_id": "demo-002",
+  "title": "Irreversible action (demo)",
+  "irreversible": true,
+  "stake": "high",
+  "deadline_hours": 24,
+  "notes": "This should trigger DELAY48h."
+}
