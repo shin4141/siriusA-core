@@ -1,4 +1,3 @@
-cat > src/siriusa_core/gate.py <<'PY'
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
