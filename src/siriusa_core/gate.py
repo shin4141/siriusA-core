@@ -22,7 +22,7 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
     deadline_hours = int(req.get("deadline_hours", 0) or 0)
     stake = str(req.get("stake", "")).lower()
 
-    # BLOCK: irreversible + high stake + very short deadline
+    # BLOCK first (must be above DELAY)
     if irreversible and stake == "high" and (0 < deadline_hours <= 6):
         return Artifact(
             decision_id=decision_id,
@@ -32,7 +32,7 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
             explain="BLOCK: high-stake irreversible action under short deadline.",
         )
 
-    # DELAY: irreversible + short deadline
+    # Then DELAY
     if irreversible and (0 < deadline_hours <= 48):
         until_dt = datetime.now(timezone.utc) + timedelta(hours=48)
         return Artifact(
@@ -50,7 +50,6 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
         evidence=["rule:default => PASS"],
         explain="PASS under minimal demo rules.",
     )
-
 
 def artifact_to_dict(a: Artifact) -> Dict[str, Any]:
     return asdict(a)
