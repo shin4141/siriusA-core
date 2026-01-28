@@ -54,5 +54,3 @@ def run_gate(req: Dict[str, Any]) -> Artifact:
 
 def artifact_to_dict(a: Artifact) -> Dict[str, Any]:
     return asdict(a)
-PY
-
