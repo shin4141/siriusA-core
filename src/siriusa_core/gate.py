@@ -13,6 +13,18 @@ class Artifact:
     evidence: List[str]
     explain: str
 
+stake = str(req.get("stake", "")).lower()
+
+# BLOCK: irreversible + high stake + very short deadline
+if irreversible and stake == "high" and (0 < deadline_hours <= 6):
+    return Artifact(
+        decision_id=decision_id,
+        severity="BLOCK",
+        until=None,
+        evidence=["rule:irreversible+stake=high+deadline<=6 => BLOCK"],
+        explain="BLOCK: high-stake irreversible action under short deadline."
+    )
+
 def run_gate(req: Dict[str, Any]) -> Artifact:
     decision_id = str(req.get("decision_id", "unknown"))
     irreversible = bool(req.get("irreversible", False))
