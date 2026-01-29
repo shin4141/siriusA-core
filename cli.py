@@ -24,7 +24,7 @@ def main():
     with open(args.in_path, "r", encoding="utf-8") as f:
         req = json.load(f)
 
-    from src.siriusa_core.gate import gate
+    from src.siriusa_core.gate import run_gate, artifact_to_dict
     result = gate(req)
 
     # If --out omitted (or only one arg), print to stdout (CI-friendly)
