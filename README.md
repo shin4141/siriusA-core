@@ -1,11 +1,19 @@
 # siriusA-core
-Deterministic pre-execution safety gate (PASS/DELAY/BLOCK) + artifact schema. SiriusA core runtime.
 
-## Quickstart
+**Stop scams twice**: block at the *entrance* (Pre-Guard) and right *before execution* (Tx-Guard), then **save the reason as a single artifact** (Chain).
+
+- Verdict: **PASS / DELAY / BLOCK**
+- Merge rule: **severity = max**, **evidence = union**
+- Output: JSON artifacts (auditable, shareable)
+
+---
+
+## Quickstart (3 commands)
+
+> Requires: Python 3.10+ (recommended)
+
+### 0) (Optional) create venv & install
 ```bash
-python cli.py examples/decision_request.json
-```
-Expected output: JSON artifact with severity PASS/DELAY/BLOCK.
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt 2>/dev/null || true
 
-PASS example: artifacts/demo_artifact_pass.json
-DELAY example: artifacts/demo_artifact_delay.json
