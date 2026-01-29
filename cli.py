@@ -1,22 +1,12 @@
-import argparse
 import json
-import os
 import sys
+from pathlib import Path
 
-def _parse_args():
-    # Backward compatible:
-    #  A) python cli.py <in>
-    #  B) python cli.py <in> <out>
-    #  C) python cli.py --in <in> --out <out>
-    if len(sys.argv) >= 2 and not sys.argv[1].startswith("--"):
-        in_path = sys.argv[1]
-        out_path = sys.argv[2] if len(sys.argv) >= 3 else None
-        return argparse.Namespace(in_path=in_path, out_path=out_path)
+# Ensure ./src is importable when running from repo root
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-    p = argparse.ArgumentParser()
-    p.add_argument("--in", dest="in_path", required=True)
-    p.add_argument("--out", dest="out_path", required=False, default=None)
-    return p.parse_args()
+from siriusa_core.gate import run_gate, artifact_to_dict
+
 
 def main():
     import argparse, json, os, sys
@@ -57,5 +47,5 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-
-
+if __name__ == "__main__":
+    main()
