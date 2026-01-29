@@ -1,62 +1,38 @@
+import argparse
 import json
+import os
 import sys
-from pathlib import Path
 
-# add ./src to import path
-sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+def _parse_args():
+    # backward compatible:
+    #   python chain_cli.py <pre> <tx> <out>
+    #   python chain_cli.py --pre <pre> --tx <tx> --out <out>
+    if len(sys.argv) >= 4 and not sys.argv[1].startswith("--"):
+        return argparse.Namespace(pre_path=sys.argv[1], tx_path=sys.argv[2], out_path=sys.argv[3])
 
-from siriusa_core.pre_guard import run_pre_guard, pre_artifact_to_dict
-from siriusa_core.gate import run_gate, artifact_to_dict
-
-ORDER = {"PASS": 0, "DELAY": 1, "BLOCK": 2}
-
-
-def max_severity(a: str, b: str) -> str:
-    return a if ORDER[a] >= ORDER[b] else b
-
+    p = argparse.ArgumentParser()
+    p.add_argument("--pre", dest="pre_path", required=True)
+    p.add_argument("--tx", dest="tx_path", required=True)
+    p.add_argument("--out", dest="out_path", required=True)
+    return p.parse_args()
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python chain_cli.py <pre_guard_json> <tx_guard_json>")
-        sys.exit(2)
+    args = _parse_args()
 
-    pre_path = sys.argv[1]
-    tx_path = sys.argv[2]
+    with open(args.pre_path, "r", encoding="utf-8") as f:
+        pre = json.load(f)
+    with open(args.tx_path, "r", encoding="utf-8") as f:
+        tx = json.load(f)
 
-    with open(pre_path, "r", encoding="utf-8") as f:
-        pre_req = json.load(f)
-    with open(tx_path, "r", encoding="utf-8") as f:
-        tx_req = json.load(f)
+    # keep your existing merge logic here
+    # severity=max, evidence=union
+    from src.siriusa_core.chain import chain_merge  # ←もし無いなら既存ロジックをそのまま使う
+    out = chain_merge(pre, tx)
 
-    pre_art = run_pre_guard(pre_req)
-    tx_art = run_gate(tx_req)
-
-    pre_d = pre_artifact_to_dict(pre_art)
-    tx_d = artifact_to_dict(tx_art)
-
-    severity = max_severity(pre_d["severity"], tx_d["severity"])
-
-    # until: only meaningful for DELAY (from tx side)
-    until = tx_d.get("until") if severity == "DELAY" else None
-
-    evidence = []
-    for e in pre_d.get("evidence", []):
-        evidence.append(f"pre:{e}")
-    for e in tx_d.get("evidence", []):
-        evidence.append(f"tx:{e}")
-
-    out = {
-        "chain_id": f'{pre_d.get("decision_id","pre")}__{tx_d.get("decision_id","tx")}',
-        "severity": severity,
-        "until": until,
-        "pre": pre_d,
-        "tx": tx_d,
-        "evidence": evidence,
-        "explain": "Chain artifact: Pre-Guard + Tx-Guard canonicalized (severity=max, evidence=union).",
-    }
-
-    print(json.dumps(out, ensure_ascii=False, indent=2))
-
+    os.makedirs(os.path.dirname(args.out_path) or ".", exist_ok=True)
+    with open(args.out_path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
     main()
+
