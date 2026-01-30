@@ -16,18 +16,39 @@ def _parse_args():
     return p.parse_args()
 
 def main():
-    args = _parse_args()
+    import argparse, json, os
 
-    with open(args.in_path, "r", encoding="utf-8") as f:
+    p = argparse.ArgumentParser()
+    # Backward compatible:
+    #   python pre_cli.py <in>
+    #   python pre_cli.py <in> <out>
+    p.add_argument("in_pos", nargs="?", default=None)
+    p.add_argument("out_pos", nargs="?", default=None)
+
+    # New style:
+    #   python pre_cli.py --in <in> --out <out>
+    p.add_argument("--in", dest="in_flag", default=None)
+    p.add_argument("--out", dest="out_flag", default=None)
+
+    args = p.parse_args()
+    in_path = args.in_flag or args.in_pos
+    out_path = args.out_flag or args.out_pos
+
+    if not in_path:
+        p.error("input file required (positional <in> or --in <in>)")
+
+    with open(in_path, "r", encoding="utf-8") as f:
         req = json.load(f)
 
-    # call your existing logic here (example)
-    # result = pre_guard(req)
-    from src.siriusa_core.pre_guard import pre_guard
-    result = pre_guard(req)
+    from src.siriusa_core.pre_guard import run_pre_guard, pre_artifact_to_dict
+    result = pre_artifact_to_dict(run_pre_guard(req))
 
-    os.makedirs(os.path.dirname(args.out_path) or ".", exist_ok=True)
-    with open(args.out_path, "w", encoding="utf-8") as f:
+    if not out_path:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
