@@ -26,9 +26,31 @@ def main():
 
     # keep your existing merge logic here
     # severity=max, evidence=union
-    from src.siriusa_core.chain import chain_merge  # ←もし無いなら既存ロジックをそのまま使う
-    out = chain_merge(pre, tx)
 
+    # local merge (no external module dependency)
+    SEV_ORDER = {"PASS": 0, "DELAY": 1, "BLOCK": 2}
+    def _max_sev(a, b):
+        return a if SEV_ORDER.get(a, -1) >= SEV_ORDER.get(b, -1) else b
+
+    severity = _max_sev(pre.get("severity"), tx.get("severity"))
+
+    pre_ev = pre.get("evidence") or []
+    tx_ev  = tx.get("evidence") or []
+    # stable union (preserve order, unique)
+    seen = set()
+    evidence = []
+    for x in list(pre_ev) + list(tx_ev):
+        if x not in seen:
+            seen.add(x)
+            evidence.append(x)
+
+    # minimal chain artifact
+    out = {
+        "severity": severity,
+        "evidence": evidence,
+        "pre": pre,
+        "tx": tx,
+    }
     os.makedirs(os.path.dirname(args.out_path) or ".", exist_ok=True)
     with open(args.out_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
