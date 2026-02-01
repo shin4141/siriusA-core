@@ -21,7 +21,7 @@ def run_pre_guard(req: Dict[str, Any]) -> PreArtifact:
     urgency = str(req.get("urgency", "")).lower()
     text = str(req.get("text", "")).lower()
 
-    # BLOCK: credential/API-key request before execution
+    # BLOCK first: credential/API-key request before execution
     if ("api key" in text) or ("apikey" in text) or ("token" in text) or ("secret" in text):
         return PreArtifact(
             decision_id=decision_id,
@@ -41,7 +41,7 @@ def run_pre_guard(req: Dict[str, Any]) -> PreArtifact:
             explain="BLOCK: common phishing pattern detected (DM + airdrop link).",
         )
 
-    # DELAY: urgency pressure before any execution
+    # Then DELAY: urgency pressure
     if urgency in ("now", "urgent", "limited"):
         return PreArtifact(
             decision_id=decision_id,
@@ -58,7 +58,6 @@ def run_pre_guard(req: Dict[str, Any]) -> PreArtifact:
         evidence=["rule:default => PASS"],
         explain="PASS: no obvious pre-execution risk detected.",
     )
-
 
 def pre_artifact_to_dict(a: PreArtifact) -> Dict[str, Any]:
     return asdict(a)
