@@ -1,5 +1,9 @@
 # siriusA-core
 
+## Why this exists
+Recent agent platforms (e.g., Moltbook/Moltbot) showed how easily irreversible mistakes happen.
+This repo demonstrates a deterministic pre- and pre-execution gate that stops them.
+
 **Stop scams twice**: block at the *entrance* (Pre-Guard) and right *before execution* (Tx-Guard), then **save the reason as a single artifact** (Chain).
 
 - Verdict: **PASS / DELAY / BLOCK**
