@@ -4,6 +4,7 @@ from typing import Dict, Any, List, Literal, Optional
 
 Severity = Literal["PASS", "DELAY", "BLOCK"]
 
+
 @dataclass
 class PreArtifact:
     decision_id: str
@@ -12,11 +13,23 @@ class PreArtifact:
     evidence: List[str]
     explain: str
 
+
 def run_pre_guard(req: Dict[str, Any]) -> PreArtifact:
     decision_id = str(req.get("decision_id", "unknown"))
     source = str(req.get("source", "")).lower()
     link = str(req.get("link", "")).lower()
     urgency = str(req.get("urgency", "")).lower()
+    text = str(req.get("text", "")).lower()
+
+    # BLOCK: credential/API-key request before execution
+    if ("api key" in text) or ("apikey" in text) or ("token" in text) or ("secret" in text):
+        return PreArtifact(
+            decision_id=decision_id,
+            severity="BLOCK",
+            until=None,
+            evidence=["rule:request_api_key => BLOCK"],
+            explain="BLOCK: credential/API key request detected before execution.",
+        )
 
     # BLOCK: obvious phishing pattern (minimal demo)
     if "airdrop" in link and source == "dm":
@@ -45,6 +58,7 @@ def run_pre_guard(req: Dict[str, Any]) -> PreArtifact:
         evidence=["rule:default => PASS"],
         explain="PASS: no obvious pre-execution risk detected.",
     )
+
 
 def pre_artifact_to_dict(a: PreArtifact) -> Dict[str, Any]:
     return asdict(a)
