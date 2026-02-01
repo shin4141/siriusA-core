@@ -1,0 +1,9 @@
+{
+  "version": "v0",
+  "decision_id": "pre-002",
+  "source": "web",
+  "link": "https://example.com/connect",
+  "urgency": "now",
+  "text": "To continue, paste your API key here.",
+  "notes": "This should trigger BLOCK via request_api_key."
+}
